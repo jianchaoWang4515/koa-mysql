@@ -1,0 +1,16 @@
+{
+  "name": "mysql-node",
+  "version": "1.0.0",
+  "description": "利用node写后端服务及链接mysql",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "jianchao.wang",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.6.2",
+    "mysql": "^2.16.0"
+  }
+}
