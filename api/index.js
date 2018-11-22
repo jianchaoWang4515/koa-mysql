@@ -8,14 +8,19 @@ class myRouter {
         this.initApi();
     }
     init() {
-        return new Router({
-            prefix: '/wjc'
-        })
+        return new Router();
     }
     initPlugin() {
         this.app.use(this.router.routes()).use(this.router.allowedMethods());
     }
     initApi() {
+        this.router.get('/', async (ctx, next) => {
+            let data = await Mysql.selectAll(ctx.params.id);
+            ctx.body = {
+                code: 'success',
+                data
+            };
+        });
         this.router.get('/get/:id', async (ctx, next) => {
             let data = await Mysql.select(ctx.params.id);
             ctx.body = {
