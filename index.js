@@ -1,17 +1,10 @@
-let Mysql = require('./mysql');
 let Koa = require('koa');
 let ROUTER = require('./api');
 const app = new Koa();
 // 启动koa-router
-const router = new ROUTER(app).router;
+new ROUTER(app);
 
-router.get('/get/:id', async (ctx, next) => {
-	let data = await Mysql.select(ctx.params.id);
-	ctx.body = {
-		code: 'success',
-		data
-	};
-});
+
 
 // Mysql.insert({ id: 2, user: '王建超', password: 'wangjianchao' }).then(res => {
 // 	console.log("插入成功");
