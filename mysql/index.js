@@ -17,13 +17,16 @@ class SQLTOOL {
     connect() {
         this.SQL.connect(function (err) {
             if (err) {
-                console.log("链接失败");
+                console.log("服务器启动失败");
                 throw (err)
             } else {
-                console.log("链接成功");
+                console.log("服务器启动成功");
             }
         });
     }
+    /**
+     * 查询表中所有数据
+     */
     selectAll() {
         return new Promise((resovle, reject) => {
             this.SQL.query('SELECT * FROM users', function(err, result) {
@@ -32,14 +35,22 @@ class SQLTOOL {
             });
         })
     }
-    select(id) {
+    /**
+     * 查询
+     * @param {int} id 查询的id
+     */
+    select(account) {
         return new Promise((resovle, reject) => {
-            this.SQL.query(`SELECT * FROM users WHERE id=${id}`, function(err, result) {
+            this.SQL.query(`SELECT * FROM users WHERE account = ?`, [account], function(err, result) {
                 if (err) throw err;
                 resovle(result);
             });
         })
     }
+    /**
+     * 新增行数据
+     * @param {object} data 新增数据
+     */
     insert(data) {
         return new Promise((resovle, reject) => {
             this.SQL.query('INSERT INTO users SET ?', data, function(err, result) {
@@ -48,6 +59,23 @@ class SQLTOOL {
             });
         })
     }
+    /**
+     * 修改表 添加列
+     * @param {CHAR} name 列名称
+     * @param {CHAR} type 字段类型
+     */
+    insertColumn(name, type) {
+        return new Promise((resovle, reject) => {
+            this.SQL.query(`ALTER TABLE users ADD ${name} ${type}`, function(err, result) {
+                if (err) throw err;
+                resovle(result);
+            });
+        })
+    }
+    /**
+     * 删除行数据
+     * @param {int} id 需要删除行的id
+     */
     delete(id) {
         return new Promise((resovle, reject) => {
             this.SQL.query(`DELETE FROM users WHERE id = ${id}`, function(err, result) {
