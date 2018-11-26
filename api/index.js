@@ -17,6 +17,7 @@ class myRouter {
             .use(this.router.allowedMethods());
     }
     initApi() {
+        // 获取全部数据
         this.router.get('/', async (ctx, next) => {
             let data = await Mysql.selectAll(ctx.params.id);
             ctx.body = {
@@ -24,6 +25,7 @@ class myRouter {
                 data
             };
         });
+        // 注册
         this.router.post('/register', async (ctx, next) => {
             let { user, account, password } = { ...ctx.request.body };
             await Mysql.insert({ user, account, password, time: new Date() }).then(res => {
@@ -33,6 +35,7 @@ class myRouter {
                 };
             });
         });
+        // 登录
         this.router.post('/login', async (ctx, next) => {
             let { account, password } = { ...ctx.request.body };
             let pwd = await Mysql.select(account);
@@ -48,13 +51,34 @@ class myRouter {
             if (password !== pwd[0].password) {
                 message = '帐号或密码错误';
                 code = 'error';
+            } else {
+                ctx.cookies.set('USER', pwd[0].account, {
+                    maxAge:1000*60*1
+                })
             }
             ctx.body = {
                 code,
                 message
             };
         });
+        // 登出
+        this.router.post('/logout', async (ctx, next) => {
+            ctx.cookies.set('USER', null);
+            ctx.body = {
+                code: 'success',
+                message: '登出成功'
+            };
+        });
+        // 根据id查询数据
         this.router.get('/get/:id', async (ctx, next) => {
+            let USER = ctx.cookies.get('USER');
+            if (!USER) {
+                ctx.body = {
+                    code: 'no-login',
+                    message: '用户未登录'
+                };
+                return;
+            }
             let data = await Mysql.select(ctx.params.id);
             ctx.body = {
                 code: 'success',
