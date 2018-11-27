@@ -25,6 +25,23 @@ class myRouter {
                 data
             };
         });
+        // 获取用户信息
+        this.router.get('/session-info', async (ctx, next) => {
+            let USERACCOUNT = ctx.cookies.get('USER');
+            if (!USERACCOUNT) {
+                ctx.body = {
+                    code: 'no-login',
+                    message: '用户未登录'
+                };
+                return;
+            };
+            let userInfo = await Mysql.select(USERACCOUNT);
+            ctx.body = {
+                code: 'success',
+                data: userInfo[0],
+                message: '获取用户信息成功'
+            };
+        });
         // 注册
         this.router.post('/register', async (ctx, next) => {
             let { user, account, password } = { ...ctx.request.body };
@@ -53,7 +70,7 @@ class myRouter {
                 code = 'error';
             } else {
                 ctx.cookies.set('USER', pwd[0].account, {
-                    maxAge:1000*60*1
+                    maxAge:1000*60*5
                 })
             }
             ctx.body = {
